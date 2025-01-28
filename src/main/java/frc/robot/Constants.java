@@ -35,6 +35,17 @@ public final class Constants {
 
     public static class TurretConstants{
 
+        public enum TurretPreset{
+            FORWARD(Rotation2d.fromDegrees(0)),
+            BACKWARD(Rotation2d.fromDegrees(180)),
+            STOW(Rotation2d.fromDegrees(0));
+
+            public final Rotation2d presetSetpoint;
+            private TurretPreset(Rotation2d presetSetpoint) {
+                this.presetSetpoint = presetSetpoint;
+            }
+        }
+
         public static final int kMotorID = 1;
         public static final double kGearRatio = 58.2;
         
@@ -45,7 +56,7 @@ public final class Constants {
         
         private static final ClosedLoopConfig kCLConfig = new ClosedLoopConfig()
             .p(0.1).i(0).d(0)
-            .positionWrappingEnabled(true);
+            .positionWrappingEnabled(false);
         
         public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
             .apply(kEncoderConfig)
@@ -53,16 +64,21 @@ public final class Constants {
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(35)
             .secondaryCurrentLimit(40);
+
+        public static final Rotation2d kMaxAngle = Rotation2d.fromRadians(3 * Math.PI);
+        public static final Rotation2d kMinAngle = Rotation2d.fromRadians(-3 * Math.PI);
+        public static final Rotation2d kThreshold = Rotation2d.fromDegrees(5);
+
         
         public static final MotorType kMotorType = MotorType.kBrushless;
         
         public static final SimpleMotorFeedforward kFeedForwardCalc = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
         
         public static final TrapezoidProfile.Constraints kConstraints = new TrapezoidProfile.Constraints(2.0, 1.0); //units are the output units (degrees of the turret in this example)
-        
+
         public static final Rotation2d kStartingAngle = Rotation2d.fromDegrees(0.0);
 
-        public static final SingleJointedArmSim kSim = new SingleJointedArmSim(DCMotor.getNEO(1), kGearRatio, 1, 1, -100, 100, false, 0.0);
+        public static final SingleJointedArmSim kSim = new SingleJointedArmSim(DCMotor.getNEO(1), kGearRatio, 1, 1, -4*Math.PI, 4 * Math.PI, false, 0.0);
 
     }
 }
